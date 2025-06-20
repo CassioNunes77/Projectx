@@ -1,0 +1,22 @@
+name: virtual-girlfriend-ai
+services:
+- name: web
+  source_dir: /
+  github:
+    repo: yourusername/virtual-girlfriend-ai
+    branch: main
+  run_command: npm start
+  environment_slug: node-js
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  envs:
+  - key: NODE_ENV
+    value: production
+  - key: OPENAI_API_KEY
+    value: ${OPENAI_API_KEY}
+    type: SECRET
+  - key: JWT_SECRET
+    value: ${JWT_SECRET}
+    type: SECRET
+  health_check:
+    http_path: /health 

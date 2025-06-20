@@ -1,0 +1,137 @@
+---
+- name: Deploy Virtual Girlfriend AI
+  hosts: all
+  become: yes
+  vars:
+    app_name: virtual-girlfriend-ai
+    app_port: 5000
+    app_user: virtualgirlfriend
+    app_dir: /opt/{{ app_name }}
+    
+  tasks:
+    - name: Update system packages
+      apt:
+        update_cache: yes
+        upgrade: yes
+      when: ansible_os_family == "Debian"
+      
+    - name: Install Node.js and npm
+      block:
+        - name: Add NodeSource repository
+          shell: |
+            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          args:
+            creates: /etc/apt/sources.list.d/nodesource.list
+            
+        - name: Install Node.js
+          apt:
+            name: nodejs
+            state: present
+            
+    - name: Install PM2 globally
+      npm:
+        name: pm2
+        global: yes
+        
+    - name: Create application user
+      user:
+        name: "{{ app_user }}"
+        system: yes
+        shell: /bin/bash
+        home: "{{ app_dir }}"
+        
+    - name: Create application directory
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0755'
+        
+    - name: Copy application files
+      copy:
+        src: "{{ playbook_dir }}/../"
+        dest: "{{ app_dir }}"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        
+    - name: Install application dependencies
+      npm:
+        path: "{{ app_dir }}"
+        state: present
+      become_user: "{{ app_user }}"
+      
+    - name: Install server dependencies
+      npm:
+        path: "{{ app_dir }}/server"
+        state: present
+      become_user: "{{ app_user }}"
+      
+    - name: Install client dependencies
+      npm:
+        path: "{{ app_dir }}/client"
+        state: present
+      become_user: "{{ app_user }}"
+      
+    - name: Build client application
+      npm:
+        path: "{{ app_dir }}/client"
+        run: build
+      become_user: "{{ app_user }}"
+      
+    - name: Create environment file
+      template:
+        src: env.j2
+        dest: "{{ app_dir }}/server/.env"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0600'
+        
+    - name: Create PM2 ecosystem file
+      template:
+        src: ecosystem.config.js.j2
+        dest: "{{ app_dir }}/ecosystem.config.js"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        
+    - name: Start application with PM2
+      shell: |
+        cd {{ app_dir }}
+        pm2 start ecosystem.config.js --env production
+        pm2 save
+        pm2 startup
+      become_user: "{{ app_user }}"
+      
+    - name: Configure Nginx
+      template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/sites-available/{{ app_name }}
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart nginx
+      
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/{{ app_name }}
+        dest: /etc/nginx/sites-enabled/{{ app_name }}
+        state: link
+      notify: restart nginx
+      
+    - name: Configure firewall
+      ufw:
+        rule: allow
+        port: "80"
+        proto: tcp
+        
+    - name: Configure firewall for HTTPS
+      ufw:
+        rule: allow
+        port: "443"
+        proto: tcp
+        
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted 

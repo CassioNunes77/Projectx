@@ -1,0 +1,20 @@
+name = "virtual-girlfriend-ai"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "npm run build"
+watch_dir = "client"
+
+[env.production]
+name = "virtual-girlfriend-ai-prod"
+
+[env.staging]
+name = "virtual-girlfriend-ai-staging"
+
+[[env.production.routes]]
+pattern = "/api/*"
+script = "server/index.js"
+
+[[env.staging.routes]]
+pattern = "/api/*"
+script = "server/index.js" 
