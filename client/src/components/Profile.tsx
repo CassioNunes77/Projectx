@@ -176,7 +176,7 @@ const AchievementCard = styled(motion.div)<{ unlocked: boolean }>`
   opacity: ${props => props.unlocked ? 1 : 0.5};
 `;
 
-const AchievementIcon = styled.div`
+const AchievementIcon = styled.div<{ unlocked: boolean }>`
   font-size: 2rem;
   margin-bottom: 0.5rem;
   color: ${props => props.unlocked ? '#ffd700' : '#666'};
