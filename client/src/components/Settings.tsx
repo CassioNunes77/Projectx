@@ -192,6 +192,8 @@ const Settings: React.FC<SettingsProps> = ({ user, onUpdate }) => {
   const [activeTab, setActiveTab] = useState<'profile' | 'preferences' | 'premium'>('profile');
   const [isLoading, setIsLoading] = useState(false);
 
+  const currentTier = user.subscription?.tier ?? 'free';
+
   const premiumFeatures = [
     {
       id: 'photos',
@@ -243,26 +245,26 @@ const Settings: React.FC<SettingsProps> = ({ user, onUpdate }) => {
       name: 'Gratuito',
       price: 'R$ 0',
       features: ['Chat básico', 'Personalidade padrão', 'Memória básica'],
-      current: user.subscription.tier === 'free'
+      current: currentTier === 'free'
     },
     {
       id: 'premium',
       name: 'Premium',
       price: 'R$ 19,90/mês',
       features: ['Chat avançado', 'Fotos e áudios', 'Chamadas de voz', 'Surpresas', 'Memória avançada'],
-      current: user.subscription.tier === 'premium'
+      current: currentTier === 'premium'
     },
     {
       id: 'premium-plus',
       name: 'Premium+',
       price: 'R$ 39,90/mês',
       features: ['Tudo do Premium', 'Chamadas de vídeo', 'Personalização completa', 'Prioridade total'],
-      current: user.subscription.tier === 'premium-plus'
+      current: currentTier === 'premium-plus'
     }
   ];
 
   const handleSubscriptionChange = async (planId: string) => {
-    if (planId === user.subscription.tier) return;
+    if (planId === currentTier) return;
 
     setIsLoading(true);
     try {
