@@ -193,6 +193,7 @@ const Settings: React.FC<SettingsProps> = ({ user, onUpdate }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const currentTier = user.subscription?.tier ?? 'free';
+  const currentFeatures = user.subscription?.features ?? [];
 
   const premiumFeatures = [
     {
@@ -294,7 +295,7 @@ const Settings: React.FC<SettingsProps> = ({ user, onUpdate }) => {
   };
 
   const isFeatureAvailable = (featureId: string) => {
-    return user.subscription.features.includes(featureId);
+    return currentFeatures.includes(featureId);
   };
 
   return (
