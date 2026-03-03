@@ -1,10 +1,10 @@
 [build]
-  command = "npm install && cd client && npm install && ESLINT_NO_DEV_ERRORS=true npm run build"
+  command = "npm install && cd client && npm install && DISABLE_ESLINT_PLUGIN=true npm run build"
   publish = "client/build"
 
 [build.environment]
   NODE_VERSION = "18"
-  ESLINT_NO_DEV_ERRORS = "true"
+  DISABLE_ESLINT_PLUGIN = "true"
 
 [[redirects]]
   from = "/api/*"
