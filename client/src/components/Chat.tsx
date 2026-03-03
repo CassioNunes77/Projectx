@@ -150,7 +150,7 @@ const Chat: React.FC<ChatProps> = ({ user }) => {
   };
 
   const getRelationshipLevelName = (level: number): string => {
-    const levelNames = {
+    const levelNames: Record<number, string> = {
       1: 'Estranhos',
       2: 'Conhecidos',
       3: 'Amigos',
