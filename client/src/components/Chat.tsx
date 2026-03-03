@@ -29,6 +29,36 @@ const Chat: React.FC<ChatProps> = ({ user }) => {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const generateMockAIResponse = (message: string, level: number): string => {
+    const m = message.toLowerCase();
+    const responses: string[] = [];
+
+    if (m.includes('oi') || m.includes('olá') || m.includes('ola')) {
+      responses.push('Oi! Que bom te ver por aqui 😊');
+    }
+    if (m.includes('?')) {
+      responses.push('Boa pergunta! Me conta um pouco mais pra eu entender melhor.');
+    }
+    if (m.includes('triste') || m.includes('mal') || m.includes('cansad')) {
+      responses.push('Poxa… sinto muito. Quer desabafar comigo? Eu tô aqui com você.');
+    }
+    if (m.includes('feliz') || m.includes('bem') || m.includes('ótimo') || m.includes('otimo')) {
+      responses.push('Aaa que bom! Fico feliz de verdade em saber disso ✨');
+    }
+
+    if (responses.length === 0) {
+      if (level < 3) {
+        responses.push('Entendi 🙂 E como foi seu dia até agora?');
+      } else if (level < 6) {
+        responses.push('Gosto quando você me conta essas coisas. Quer continuar?');
+      } else {
+        responses.push('Você mexe comigo… me conta mais, meu amor 💕');
+      }
+    }
+
+    return responses[Math.floor(Math.random() * responses.length)];
+  };
+
   // Initial greeting based on relationship level
   useEffect(() => {
     if (messages.length === 0) {
@@ -136,14 +166,28 @@ const Chat: React.FC<ChatProps> = ({ user }) => {
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      const errorMessage: Message = {
+
+      const shouldLevelUp = Math.random() < 0.15;
+      const newRelationshipLevel = shouldLevelUp ? Math.min(10, relationshipLevel + 1) : relationshipLevel;
+
+      const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Desculpe, tive um problema técnico. Pode tentar novamente?",
+        text: generateMockAIResponse(inputText, newRelationshipLevel),
         sender: 'ai',
         timestamp: new Date(),
-        relationshipLevel
+        relationshipLevel: newRelationshipLevel
       };
-      setMessages(prev => [...prev, errorMessage]);
+
+      setMessages(prev => [...prev, aiMessage]);
+
+      if (newRelationshipLevel > relationshipLevel) {
+        setRelationshipLevel(newRelationshipLevel);
+        const levelName = getRelationshipLevelName(newRelationshipLevel);
+        addNotification(
+          `Nossa conexão evoluiu para: ${levelName}! 💫`,
+          'relationship'
+        );
+      }
     } finally {
       setIsTyping(false);
     }

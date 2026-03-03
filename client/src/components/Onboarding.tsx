@@ -25,44 +25,24 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const user: User = {
+        id: `local_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+        name: name.trim(),
+        relationshipLevel: 1,
+        conversationCount: 0,
+        lastActive: new Date(),
+        preferences: {
+          aiPersonality: 'friendly',
+          conversationStyle,
+          interests: []
         },
-        body: JSON.stringify({
-          name: name.trim(),
-          preferences: {
-            conversationStyle,
-            interests: []
-          }
-        }),
-      });
+        subscription: {
+          tier: 'free',
+          features: ['chat_basic']
+        }
+      };
 
-      const data = await response.json();
-
-      if (data.success) {
-        const user: User = {
-          id: data.user.id,
-          name: data.user.name,
-          relationshipLevel: 1,
-          conversationCount: 0,
-          lastActive: new Date(),
-          preferences: {
-            aiPersonality: 'friendly',
-            conversationStyle,
-            interests: []
-          },
-          subscription: {
-            tier: 'free',
-            features: ['chat_basic']
-          }
-        };
-
-        onComplete(user);
-      } else {
-        throw new Error(data.error || 'Erro ao criar perfil');
-      }
+      onComplete(user);
     } catch (error) {
       console.error('Registration error:', error);
       alert('Erro ao criar perfil. Tente novamente.');
