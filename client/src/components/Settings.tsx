@@ -361,12 +361,12 @@ const Settings: React.FC<SettingsProps> = ({ user, onUpdate }) => {
             <div className="preference-item">
               <label>Estilo de Conversa:</label>
               <select
-                value={user.preferences.conversationStyle}
+                value={user.preferences?.conversationStyle ?? 'casual'}
                 onChange={(e) => {
                   const updatedUser = {
                     ...user,
                     preferences: {
-                      ...user.preferences,
+                      ...(user.preferences ?? {}),
                       conversationStyle: e.target.value
                     }
                   };
@@ -394,11 +394,11 @@ const Settings: React.FC<SettingsProps> = ({ user, onUpdate }) => {
               <h4>Seu Plano Atual</h4>
               <div className="plan-card current">
                 <div className="plan-info">
-                  <h5>{subscriptionPlans.find(p => p.id === user.subscription.tier)?.name}</h5>
-                  <p>{subscriptionPlans.find(p => p.id === user.subscription.tier)?.price}</p>
+                  <h5>{subscriptionPlans.find(p => p.id === currentTier)?.name}</h5>
+                  <p>{subscriptionPlans.find(p => p.id === currentTier)?.price}</p>
                 </div>
                 <div className="plan-features">
-                  {subscriptionPlans.find(p => p.id === user.subscription.tier)?.features.map(feature => (
+                  {subscriptionPlans.find(p => p.id === currentTier)?.features.map(feature => (
                     <span key={feature} className="feature-tag">✓ {feature}</span>
                   ))}
                 </div>
@@ -429,7 +429,7 @@ const Settings: React.FC<SettingsProps> = ({ user, onUpdate }) => {
             </div>
 
             {/* Upgrade Options */}
-            {user.subscription.tier === 'free' && (
+            {currentTier === 'free' && (
               <div className="upgrade-section">
                 <h4>Fazer Upgrade</h4>
                 <div className="plans-grid">
