@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Settings, LogOut, User, Bell, Moon, Sun, Volume2, VolumeX, Heart, Palette } from 'lucide-react';
+import { Settings as SettingsIcon, LogOut, User, Bell, Moon, Sun, Volume2, VolumeX, Heart, Palette } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useUser } from '../contexts/UserContext';
 import { User as UserType } from '../types';
