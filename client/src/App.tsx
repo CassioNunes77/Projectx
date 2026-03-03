@@ -94,7 +94,7 @@ function App() {
         </main>
 
         {/* Subscription Banner */}
-        {user && user.subscription.tier === 'free' && (
+        {user && user.subscription?.tier === 'free' && (
           <div className="subscription-banner">
             <p>Desbloqueie recursos exclusivos com o Premium</p>
             <button className="btn btn-primary">Ver Planos</button>
