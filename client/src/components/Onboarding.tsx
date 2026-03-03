@@ -42,10 +42,16 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         }
       };
 
-      onComplete(user);
+      try {
+        onComplete(user);
+      } catch (err) {
+        console.error('Onboarding onComplete error:', err);
+        throw err;
+      }
     } catch (error) {
-      console.error('Registration error:', error);
-      alert('Erro ao criar perfil. Tente novamente.');
+      console.error('Onboarding error:', error);
+      const message = error instanceof Error ? error.message : String(error);
+      alert(`Erro ao criar perfil. Detalhes: ${message}`);
     } finally {
       setIsLoading(false);
     }
