@@ -4,24 +4,8 @@ import Chat from './components/Chat';
 import Profile from './components/Profile';
 import Settings from './components/Settings';
 import Onboarding from './components/Onboarding';
+import { User } from './types';
 import './App.css';
-
-interface User {
-  id: string;
-  name: string;
-  relationshipLevel: number;
-  conversationCount: number;
-  lastActive: Date;
-  preferences: {
-    aiPersonality: string;
-    conversationStyle: string;
-    interests: string[];
-  };
-  subscription: {
-    tier: 'free' | 'premium' | 'premium-plus';
-    features: string[];
-  };
-}
 
 function App() {
   const [currentView, setCurrentView] = useState<'chat' | 'profile' | 'settings' | 'onboarding'>('chat');

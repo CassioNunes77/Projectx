@@ -1,11 +1,21 @@
 export interface User {
   id: string;
   name: string;
-  personalityType: string;
+  personalityType?: string;
   hobbies?: string;
   relationshipLevel: number;
-  createdAt: Date;
+  createdAt?: Date;
   lastActive: Date;
+  conversationCount?: number;
+  preferences?: {
+    aiPersonality?: string;
+    conversationStyle?: string;
+    interests?: string[];
+  };
+  subscription?: {
+    tier: 'free' | 'premium' | 'premium-plus';
+    features: string[];
+  };
 }
 
 export interface Personality {
