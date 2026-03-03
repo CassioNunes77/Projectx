@@ -86,7 +86,7 @@ function App() {
             <Chat user={user} />
           )}
           {currentView === 'profile' && user && (
-            <Profile user={user} onUpdate={updateUser} />
+            <Profile />
           )}
           {currentView === 'settings' && user && (
             <Settings user={user} onUpdate={updateUser} />
