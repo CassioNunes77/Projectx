@@ -145,7 +145,7 @@ const RelationshipInfo = styled.div`
   opacity: 0.8;
 `;
 
-const AchievementsSection = styled.div`
+const AchievementsSection = styled(motion.div)`
   background: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
   padding: 1.5rem;
